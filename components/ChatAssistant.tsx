@@ -49,67 +49,31 @@ const ChatAssistant: React.FC = () => {
     scrollToBottom();
   }, [messages, isLoading, isOpen]);
 
+  // 👇 把原来的 handleSend 整个换成这个：
   const handleSend = async (customInput?: string) => {
     const textToSend = customInput || input;
     if (!textToSend.trim() || isLoading) return;
 
     const userText = textToSend;
     if (!customInput) setInput('');
-    
+
+    // 1. 先把用户发的消息显示在屏幕上
     setMessages(prev => [...prev, { role: 'user', text: userText }]);
     setIsLoading(true);
 
-    try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    // 2. 模拟 AI 思考（假装延迟 1.5 秒）
+    setTimeout(() => {
+      const fakeReply = "👋 嗨！我是 UnityAI 助教（演示版）。由于当前网站运行在静态模式，无法连接实时大模型。不过你可以联系开发者探讨更多技术细节！(Demo Mode)";
       
-      // Initialize chat session if it doesn't exist
-      if (!chatSessionRef.current) {
-        chatSessionRef.current = ai.chats.create({
-          model: 'gemini-3-flash-preview',
-          config: {
-            systemInstruction: `你是一位名为“UnityAI 助教”的 AI。你的任务是回答关于“AI 驱动的游戏开发实战营”课程的问题。语气要专业、热情、充满干货。回答要简洁，多用 Emoji。如果是关于会员权益，请强调“永久买断、实时辅助、AI 自动化脚本”。`,
-            // Set thinkingBudget to 0 for maximum speed/latency optimization
-            thinkingConfig: { thinkingBudget: 0 },
-            temperature: 0.7,
-          }
-        });
-      }
-
-      const streamResponse = await chatSessionRef.current.sendMessageStream({ message: userText });
-
-      let fullText = '';
-      let isFirstChunk = true;
-
-      for await (const chunk of streamResponse) {
-        if (isFirstChunk) {
-          setIsLoading(false);
-          setMessages(prev => [...prev, { role: 'ai', text: '' }]);
-          isFirstChunk = false;
-        }
-        
-        const chunkText = chunk.text;
-        if (chunkText) {
-          fullText += chunkText;
-          setMessages(prev => {
-            const newMessages = [...prev];
-            if (newMessages.length > 0) {
-              newMessages[newMessages.length - 1] = { 
-                ...newMessages[newMessages.length - 1], 
-                text: fullText 
-              };
-            }
-            return newMessages;
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Chat error:", error);
+      // 3. 把这段“假回复”显示出来
+      // 注意：这里我用了 { role: 'model', text: ... } 结构，是为了匹配你原本的代码逻辑
+      setMessages(prev => [...prev, { role: 'model', text: fakeReply }]);
+      
       setIsLoading(false);
-      setMessages(prev => [...prev, { role: 'ai', text: '抱歉，我现在响应有点慢，请稍后再试。' }]);
-      // Reset chat session on error to allow retry
-      chatSessionRef.current = null;
-    }
+    }, 1500);
   };
+
+          
 
   return (
     <div className="fixed bottom-8 right-8 z-[200]">
