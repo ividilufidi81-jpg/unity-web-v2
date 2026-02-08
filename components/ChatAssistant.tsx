@@ -49,7 +49,7 @@ const ChatAssistant: React.FC = () => {
     scrollToBottom();
   }, [messages, isLoading, isOpen]);
 
-  // 👇 把原来的 handleSend 整个换成这个：
+  // 👇 这是一个“带关键词识别”的智能回复版
   const handleSend = async (customInput?: string) => {
     const textToSend = customInput || input;
     if (!textToSend.trim() || isLoading) return;
@@ -57,22 +57,39 @@ const ChatAssistant: React.FC = () => {
     const userText = textToSend;
     if (!customInput) setInput('');
 
-    // 1. 先把用户发的消息显示在屏幕上
+    // 1. 显示用户的问题
     setMessages(prev => [...prev, { role: 'user', text: userText }]);
     setIsLoading(true);
 
-    // 2. 模拟 AI 思考（假装延迟 1.5 秒）
+    // 2. 模拟思考（根据关键词选择不同的回复）
     setTimeout(() => {
-      const fakeReply = "👋 嗨！我是 UnityAI 助教（演示版）。由于当前网站运行在静态模式，无法连接实时大模型。不过你可以联系开发者探讨更多技术细节！(Demo Mode)";
-      
-      // 3. 把这段“假回复”显示出来
-      // 注意：这里我用了 { role: 'model', text: ... } 结构，是为了匹配你原本的代码逻辑
-      setMessages(prev => [...prev, { role: 'model', text: fakeReply }]);
-      
-      setIsLoading(false);
-    }, 1500);
-  };
+      let replyText = "";
+      // 把用户说的话转成小写，方便匹配
+      const lowerText = userText.toLowerCase();
 
+      // --- 🤖 关键词匹配逻辑 ---
+      if (lowerText.includes("会员") || lowerText.includes("价格") || lowerText.includes("钱") || lowerText.includes("费用")) {
+        replyText = "💰 **关于会员权益**\n\n我们的会员包含：\n1. 全套 Unity + AI 实战视频课程\n2. 所有项目的完整源码工程\n3. 专属 Discord 开发者社区答疑\n\n现在的早鸟优惠价非常划算，建议直接入手永久版！";
+      } 
+      else if (lowerText.includes("基础") || lowerText.includes("小白") || lowerText.includes("难") || lowerText.includes("没学过")) {
+        replyText = "👶 **零基础完全没问题！**\n\n本课程的核心理念就是“让 AI 帮你写代码”。\n你不需要背诵复杂的 C# 语法，只需要学会如何向 Cursor 提问。很多学员都是美术或策划出身，一样能做出独立游戏！";
+      }
+      else if (lowerText.includes("下载") || lowerText.includes("配置") || lowerText.includes("安装") || lowerText.includes("环境")) {
+        replyText = "🛠️ **环境配置很简单**\n\n你只需要准备两样东西：\n1. **Unity Hub** (游戏引擎)\n2. **Cursor** (AI 代码编辑器)\n\n课程第一章有详细的《保姆级环境搭建指南》，跟着视频做，10分钟就能搞定！";
+      }
+      else if (lowerText.includes("你好") || lowerText.includes("hi") || lowerText.includes("hello")) {
+        replyText = "👋 嗨！我是 UnityAI 课程助教。有什么我可以帮你的吗？\n\n你可以试着问我：\n- “0基础能学吗？”\n- “会员包含什么？”\n- “需要下载什么软件？”";
+      }
+      else {
+        // 如果没听懂，就回默认的话
+        replyText = "🤔 这个问题有点深奥...\n\n由于我是“演示版”机器人，目前只能回答关于**课程内容、适合人群、环境配置**等基础问题。\n\n您可以换个问法，或者直接联系人工客服！(Demo Mode)";
+      }
+
+      // 3. 显示回复
+      setMessages(prev => [...prev, { role: 'model', text: replyText }]);
+      setIsLoading(false);
+    }, 1000); // 1秒后回复
+  };
           
 
   return (
