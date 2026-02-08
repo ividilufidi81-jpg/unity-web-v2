@@ -171,7 +171,6 @@ const Hero: React.FC<HeroProps> = ({ onStart, isLoggedIn }) => {
                 <div className="flex-1 p-10 flex flex-col items-center justify-center text-center font-mono">
                   <div className="max-w-[280px] sm:max-w-none">
                     <p className="text-lg md:text-xl font-bold text-green-400 leading-relaxed mb-8 text-left">
-                      <span className="text-indigo-500 mr-2 opacity-50"</span>
                       {displayText}
                       {demoState === 'typing' && <span className="inline-block w-2.5 h-5 ml-1 bg-indigo-500 animate-pulse align-middle"></span>}
                     </p>
