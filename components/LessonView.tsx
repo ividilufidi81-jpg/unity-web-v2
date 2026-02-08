@@ -30,7 +30,10 @@ const LessonView: React.FC<LessonViewProps> = ({ data, onClose, onNext, hasMore 
   const [notification, setNotification] = useState<string | null>(null);
   const [isGeneratingScript, setIsGeneratingScript] = useState(false);
   const [videoScript, setVideoScript] = useState<string | null>(null);
-
+// 监听 data 变化：只要课程内容一变，就立刻滚回顶部
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [data])
   const showNotification = (msg: string) => {
     setNotification(msg);
     setTimeout(() => setNotification(null), 3000);
@@ -51,21 +54,39 @@ const LessonView: React.FC<LessonViewProps> = ({ data, onClose, onNext, hasMore 
     window.open('https://discord.gg/unity-ai-revolution', '_blank');
   };
 
-  const generateVideoScript = async () => {
+ // 👇 把原来的 generateVideoScript 替换成这个：
+  const generateVideoScript = () => {
+    // 防止重复点击
+    if (isGeneratingScript) return;
+    
     setIsGeneratingScript(true);
     setVideoScript(null);
-    try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: `你是一位百万粉丝的 Unity 教程博主。请为《${data.title}》编写一个 1 分钟的短视频分镜脚本。包含[画面描述]和[旁白文案]。语气要极度兴奋和干货满满。`,
-      });
-      setVideoScript(response.text || '脚本创作失败');
-    } catch (e) {
-      showNotification('AI 响应异常');
-    } finally {
+
+    // 假装思考 2 秒
+    setTimeout(() => {
+      // 动态生成脚本内容（读取当前课程标题）
+      const fakeScript = `
+🎬 **《${data.title}》爆款短视频分镜脚本**
+
+🔥 **核心卖点**：${data.subtitle || "3分钟学会核心技巧"}
+⏱️ **推荐时长**：25秒
+
+【0-5s 黄金开头】
+画面：快速剪辑本节课的游戏最终效果（高燃BGM）。
+文案：“你敢信？只需几行代码，Unity 也能做出这种《${data.title}》效果！”
+
+【5-20s 干货展示】
+画面：分屏显示 Cursor 写代码的过程，右边展示游戏实时变化。
+文案：“别再手动造轮子了！看我用 AI 一键生成，效率直接起飞。关键参数都在这里...”
+
+【20-End 互动引导】
+画面：角色做出搞笑动作或展示一个有趣的 Bug。
+文案：“想知道源码怎么写吗？评论区扣‘666’，我把工程文件发你！”
+`;
+      
+      setVideoScript(fakeScript);
       setIsGeneratingScript(false);
-    }
+    }, 2000);
   };
 
   return (
