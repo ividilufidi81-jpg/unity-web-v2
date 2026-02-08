@@ -26,14 +26,20 @@ interface LessonViewProps {
 
 const LessonView: React.FC<LessonViewProps> = ({ data, onClose, onNext, hasMore }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  // 👇 1. 在这里加一行，创建一个引用（遥控器）
+  const scrollRef = React.useRef<HTMLDivElement>(null);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [notification, setNotification] = useState<string | null>(null);
   const [isGeneratingScript, setIsGeneratingScript] = useState(false);
   const [videoScript, setVideoScript] = useState<string | null>(null);
 // 监听 data 变化：只要课程内容一变，就立刻滚回顶部
+ // 👇 2. 修改这个 useEffect
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [data])
+    // 如果找到了那个滚动的盒子，就让它滚回顶部
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [data]);
   const showNotification = (msg: string) => {
     setNotification(msg);
     setTimeout(() => setNotification(null), 3000);
@@ -91,7 +97,7 @@ const LessonView: React.FC<LessonViewProps> = ({ data, onClose, onNext, hasMore 
 
   return (
     <div className="fixed inset-0 z-[9999] flex flex-col bg-[#020617] animate-fade-in overflow-hidden pt-20">
-      <div className="flex-1 overflow-y-auto lg:flex">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto lg:flex">
         <div className="lg:flex-1 p-8 lg:p-12 space-y-12 max-w-5xl mx-auto">
           
           {/* 视频播放区域 */}
