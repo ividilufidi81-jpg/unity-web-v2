@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UnityAI Revolution - AI 驱动的 Unity 游戏开发革命</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #020617;
+            --accent: #6366f1;
+            --cyan: #22d3ee;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-deep);
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Interactive Grid Mesh */
+        .cyber-grid {
+            background-image: 
+                linear-gradient(to right, rgba(99, 102, 241, 0.08) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(99, 102, 241, 0.08) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(circle at var(--mouse-x) var(--mouse-y), black 25%, transparent 85%);
+            -webkit-mask-image: radial-gradient(circle at var(--mouse-x) var(--mouse-y), black 25%, transparent 85%);
+            transition: mask-image 0.2s ease-out;
+        }
+
+        .glass {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #818cf8 0%, #2dd4bf 50%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+        }
+
+        /* Unity Scene Grid Pattern */
+        .unity-grid {
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Demo Animations */
+        @keyframes cube-jump {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-80px) scaleX(0.9); }
+        }
+        @keyframes cube-rotate {
+            from { transform: rotateY(0deg) rotateX(15deg); }
+            to { transform: rotateY(360deg) rotateX(15deg); }
+        }
+        @keyframes cube-pulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.4)); }
+            50% { transform: scale(1.2); filter: drop-shadow(0 0 40px rgba(239, 68, 68, 0.8)); background-color: #fca5a5; }
+        }
+
+        .animate-jump { animation: cube-jump 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+        .animate-rotate { animation: cube-rotate 2s linear infinite; }
+        .animate-pulse-glow { animation: cube-pulse 1.5s ease-in-out infinite; }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { transform: translateY(100%); opacity: 0; }
+        }
+        
+        .scan-reveal::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(to bottom, var(--cyan), transparent);
+            box-shadow: 0 0 20px var(--cyan);
+            animation: scanline 3s linear infinite;
+            pointer-events: none;
+            z-index: 30;
+        }
+
+        .magnetic-btn {
+            transition: transform 0.1s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^1.40.0",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.95.3",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>

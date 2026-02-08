@@ -1,0 +1,8 @@
+{
+  "name": "UnityAI Revolution - AI Driven Game Development",
+  "description": "Revolutionize your Unity game development with AI. Stop coding, start creating with our AI-powered curriculum and real-time guidance tools.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
